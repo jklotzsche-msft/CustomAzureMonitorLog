@@ -1,0 +1,18 @@
+[
+  {
+    "Status": "Delivered",
+    "StartDate": "2022-01-01T01:00:00.000Z",
+    "ToIP": null,
+    "Size": 1024,
+    "FromIP": "100.150.200.250",
+    "Index": 0,
+    "SenderAddress": "sender@tailspin.com",
+    "Organization": "contoso.onmicrosoft.com",
+    "MessageId": "<00000000000000000000000000000000000000@AAAAAAAAAAAAA.server.prod.outlook.com>",
+    "Subject": "This is a subject.",
+    "EndDate": "2022-01-01T01:00:00.000Z",
+    "MessageTraceId": "00000000-0000-0000-0000-000000000000",
+    "RecipientAddress": "recipient@contoso.com",
+    "Received": "2022-11-16T15:52:06.354Z"
+  }
+]
