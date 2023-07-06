@@ -119,7 +119,7 @@ https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace
 		# Differentiate between ResultSize and no ResultSize provided
 		if (-not $ResultSize) {
 			# If ResultSize was not provided, the result will be in property d
-			$MessagetraceResults = $MessageTrace.d | Select-Object -ExpandProperty results
+			$MessagetraceResults = $MessagetraceResults | Select-Object -ExpandProperty results
 		}
 		
 		# If no entries are found we can end the script here, as there is nothing to send to our loganalytics workspace
