@@ -114,24 +114,30 @@ https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace
 		}
 		
 		Write-Host "Calling $uri to get message tracking log(s)"
-		$MessageTrace = Invoke-RestMethod -Uri $uri -Headers $headers
+		$MessagetraceResults = Invoke-RestMethod -Uri $uri -Headers $headers | Select-Object -ExpandProperty d
+		
+		# Differentiate between ResultSize and no ResultSize provided
+		if (-not $ResultSize) {
+			# If ResultSize was not provided, the result will be in property d
+			$MessagetraceResults = $MessageTrace.d | Select-Object -ExpandProperty results
+		}
 		
 		# If no entries are found we can end the script here, as there is nothing to send to our loganalytics workspace
-		if ($MessageTrace.d.results.count -eq 0) {
+		if ($MessagetraceResults.count -eq 0) {
 			Write-Output "No entries in message tracking log found between StartDate $StartDate and EndDate $EndDate"
 			return
 		}
 
 		# Convert the results to a JSON object as array and return it
-		Write-Host "Returning $($MessageTrace.d.results.count) message tracking log entries"
+		Write-Host "Returning $($MessagetraceResults.count) message tracking log entries"
 		$resultArray = @()
-		$resultArray += $MessageTrace.d.results | Select-Object -ExcludeProperty __metadata, index | ConvertTo-Json -AsArray
+		$resultArray += $MessagetraceResults | Select-Object -ExcludeProperty __metadata, index | ConvertTo-Json -AsArray
 		
 		# Our Data Collection Endpoint can only handle 1MB of data per request, so we need to split the result in two parts if the result is more than 1MB
 		if(($resultArray[0].length * 2) -gt 1MB) {
 			$chunkCount = [Math]::Ceiling($resultArray[0].length / 1MB) # calculate the amount of chunks we need to split the result into
-			$chunkSize = [math]::Ceiling($MessageTrace.d.results.count / $chunkCount) # calculate the amount of entries per chunk
-			$resultArrayChunks = $MessageTrace.d.results | Group-Object -Property {[math]::Floor($_.Index / ($chunkSize))} # split the result into chunks
+			$chunkSize = [math]::Ceiling($MessagetraceResults.count / $chunkCount) # calculate the amount of entries per chunk
+			$resultArrayChunks = $MessagetraceResults | Group-Object -Property {[math]::Floor($_.Index / ($chunkSize))} # split the result into chunks
 			$resultArray = @()
 			foreach($resultArrayChunk in $resultArrayChunks) {
 				# convert each chunk to a JSON object as array and add it to the resultArray
