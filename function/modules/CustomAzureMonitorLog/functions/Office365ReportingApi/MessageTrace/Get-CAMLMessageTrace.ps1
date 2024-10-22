@@ -84,7 +84,7 @@ function Get-CAMLMessageTrace {
 		# build the header information including the access token
 		$headers = @{
 			'Authorization' = ('Bearer {0}' -f $token.access_token)
-			'Content-Type'  = 'application/json; charset=utf-8'
+			'Content-Type'  = 'application/json'
 		}
 
 		# if no StartDate was provided, set startdate as (now - 1.25h), to be sure that the status of each message tracking log entry is ready

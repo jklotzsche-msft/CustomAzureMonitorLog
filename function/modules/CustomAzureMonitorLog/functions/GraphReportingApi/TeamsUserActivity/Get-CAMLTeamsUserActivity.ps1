@@ -42,12 +42,12 @@ function Get-CAMLTeamsUserActivity {
 
 		[ValidatePattern('^\d{4}-\d{2}-\d{2}$')]
 		[ValidateScript({
-			if(([DateTime]::ParseExact($_, 'yyyy-MM-dd', $null)) -lt ((Get-Date).AddDays(-30))) {
-				throw "Date must be within the last 28 days"
-			}
-			return $true
+				if (([DateTime]::ParseExact($_, 'yyyy-MM-dd', $null)) -lt ((Get-Date).AddDays(-30))) {
+					throw "Date must be within the last 28 days"
+				}
+				return $true
 			
-		})]
+			})]
 		[Parameter(ParameterSetName = 'Date', Mandatory = $true)]
 		[String]
 		$Date
@@ -61,7 +61,7 @@ function Get-CAMLTeamsUserActivity {
 		# build the header information including the access token
 		$headers = @{
 			'Authorization' = ('Bearer {0}' -f $token.access_token)
-			'Content-Type'  = 'application/json; charset=utf-8'
+			'Content-Type'  = 'application/json'
 		}
 
 		# Call the Microsoft Graph api to get the Teams User Activity report
@@ -81,17 +81,17 @@ function Get-CAMLTeamsUserActivity {
 		# Convert the received report to a JSON object and return it to the caller
 		Write-Host "Returning data about $($teamsUserActivity.count) devices."
 		$resultArray = @()
-		$resultArray += ($teamsUserActivity | ConvertTo-Json -AsArray).replace(' ','').replace('ï»¿','') # remove spaces and BOM
+		$resultArray += ($teamsUserActivity | ConvertTo-Json -AsArray).replace(' ', '').replace('ï»¿', '') # remove spaces and BOM
 		
 		# Our Data Collection Endpoint can only handle 1MB of data per request, so we need to split the result in two parts if the result is more than 1MB
-		if(($resultArray[0].length * 2) -gt 1MB) {
+		if (($resultArray[0].length * 2) -gt 1MB) {
 			$chunkCount = [Math]::Ceiling($resultArray[0].length / 1MB) # calculate the amount of chunks we need to split the result into
 			$chunkSize = [math]::Ceiling($teamsUserActivity.count / $chunkCount) # calculate the amount of entries per chunk
-			$resultArrayChunks = $teamsUserActivity | Group-Object -Property {[math]::Floor($teamsUserActivity.IndexOf($_) / $chunkSize)} # split the result into chunks
+			$resultArrayChunks = $teamsUserActivity | Group-Object -Property { [math]::Floor($teamsUserActivity.IndexOf($_) / $chunkSize) } # split the result into chunks
 			$resultArray = @()
-			foreach($resultArrayChunk in $resultArrayChunks) {
+			foreach ($resultArrayChunk in $resultArrayChunks) {
 				# convert each chunk to a JSON object as array and add it to the resultArray
-				$resultArray += ($resultArrayChunk.Group | ConvertTo-Json -AsArray).replace(' ','').replace('ï»¿','')
+				$resultArray += ($resultArrayChunk.Group | ConvertTo-Json -AsArray).replace(' ', '').replace('ï»¿', '')
 			}
 		}
 

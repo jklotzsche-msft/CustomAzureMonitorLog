@@ -57,7 +57,7 @@ function Get-CAMLMessageTraceDetail {
 		# build the header information including the access token
 		$headers = @{
 			'Authorization' = ('Bearer {0}' -f $token.access_token)
-			'Content-Type'  = 'application/json; charset=utf-8'
+			'Content-Type'  = 'application/json'
 		}
 
 		# Create a list to store the results

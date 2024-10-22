@@ -65,7 +65,7 @@ function Get-CAMLTeamsDeviceUsage {
 		# build the header information including the access token
 		$headers = @{
 			'Authorization' = ('Bearer {0}' -f $token.access_token)
-			'Content-Type'  = 'application/json; charset=utf-8'
+			'Content-Type'  = 'application/json'
 		}
 
 		# Call the Microsoft Graph api to get the Teams Device Usage report

@@ -99,7 +99,7 @@ function Get-CAMLCustomLogTable {
 		# build the header information including the access token
 		$headers = @{
 			'Authorization' = ('Bearer {0}' -f $Token.access_token)
-			'Content-Type'  = 'application/json; charset=utf-8'
+			'Content-Type'  = 'application/json'
 		}
 		
 		<#

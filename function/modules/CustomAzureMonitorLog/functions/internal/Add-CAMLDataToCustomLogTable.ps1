@@ -91,7 +91,7 @@ function Add-CAMLDataToCustomLogTable {
 	process {
 		$headers = @{
 			'Authorization' = ('Bearer {0}' -f $Token.access_token)
-			'Content-Type'  = 'application/json; charset=utf-8-sig'
+			'Content-Type'  = 'application/json'
 		}
 		$uri = '{0}/dataCollectionRules/{1}/streams/Custom-{2}?api-version=2021-11-01-preview' -f $DceLogsIngestionUri, $DcrImmutableId, $LawTable
 
